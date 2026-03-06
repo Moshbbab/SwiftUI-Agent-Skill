@@ -471,27 +471,27 @@ GeometryReader { geometry in
 }
 ```
 
-**Use `onGeometryChange(for:of:action:)` to observe single object size and position without using `GeometryReader`**
+**Consider `onGeometryChange(for:of:action:)` when you need to react to geometry changes of a specific view.** It reports changes for the view you attach it to, and is useful for driving state/effects from geometry updates. `GeometryReader` is still useful when layout itself depends on geometry.
 
 ```swift
 // Size
 Text("Long large text")
     .onGeometryChange(for: CGSize.self) { geometry in
-                return geometry.size
-            } action: { newValue in
-                //Handle size
-            }
+        return geometry.size
+    } action: { newValue in
+        // Handle size
+    }
 
 // Offset
 VStack {
     Text("Long large text")
         .onGeometryChange(for: CGFloat.self) { geometry in
-                    return geometry.frame(in: .named("stack")).minY
-                } action: { newValue in
-                   //Handle offset
-                }
+            return geometry.frame(in: .named("stack")).minY
+        } action: { newValue in
+            // Handle offset
+        }
 }
-.coordinateSpace(name: "stack")
+.coordinateSpace(.named("stack"))
 ```
 
 **Use `coordinateSpace(_:)` with `NamedCoordinateSpace` instead of `coordinateSpace(name:)`.**
