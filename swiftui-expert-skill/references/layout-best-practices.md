@@ -259,6 +259,24 @@ struct LoginView: View {
 
 **Note**: This is about making business logic testable, not about enforcing a specific architecture. Whether you call them services, models, or something else — the key is that logic lives outside views where it can be tested independently.
 
+## Full-Width Views
+
+**When a single view needs to fill the available width, use `.frame(maxWidth: .infinity, alignment:)` instead of wrapping it in a stack with a `Spacer`.**
+
+```swift
+// Good - frame modifier
+Text("Hello")
+    .frame(maxWidth: .infinity, alignment: .leading)
+
+// Avoid - unnecessary stack and spacer
+HStack {
+    Text("Hello")
+    Spacer()
+}
+```
+
+**Why**: `.frame(maxWidth:alignment:)` is a single modifier that clearly communicates intent. Wrapping in an `HStack` with a `Spacer` adds an extra container to the view hierarchy for no benefit.
+
 ## Action Handlers
 
 **Separate layout from logic.** View body should reference action methods, not contain logic.
@@ -303,5 +321,6 @@ struct PublishView: View {
 - [ ] Gate frequent geometry updates by thresholds
 - [ ] Business logic kept in services and models (not in views)
 - [ ] Action handlers reference methods, not inline logic
+- [ ] Use `.frame(maxWidth: .infinity, alignment:)` for full-width views (not `HStack` + `Spacer`)
 - [ ] Avoid excessive `GeometryReader` usage
 - [ ] Use `containerRelativeFrame()` when appropriate
