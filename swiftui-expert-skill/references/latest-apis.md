@@ -335,6 +335,23 @@ TextField("Code", text: $code)
     .disableAutocorrection(true)
 ```
 
+### Clipboard
+
+**Prefer `PasteButton` for user-initiated paste UI to avoid paste prompts; use `UIPasteboard` when you need non-button or non-`Transferable` clipboard access.**
+
+`PasteButton` is a system-provided SwiftUI control that reads clipboard content using `Transferable` payloads. It requires a visible, user-tappable button, handles permissions automatically for that interaction, and avoids the paste permission prompt that direct `UIPasteboard` access can trigger.
+
+```swift
+// Preferred for user-initiated paste in SwiftUI
+PasteButton(payloadType: String.self) { strings in
+    pastedText = strings.first ?? ""
+}
+
+// Use when you need programmatic / non-button access or non-`Transferable` payloads.
+// Be aware: this can trigger the system paste permission prompt.
+let text = UIPasteboard.general.string
+```
+
 ---
 
 ## When Targeting iOS 17+
@@ -866,6 +883,7 @@ UIApplication.shared.activateSceneSession(
 | `NavigationView` | `NavigationStack` / `NavigationSplitView` | iOS 16+ |
 | `accentColor(_:)` | `tint(_:)` | iOS 16+ |
 | `disableAutocorrection(_:)` | `autocorrectionDisabled(_:)` | iOS 16+ |
+| `UIPasteboard.general` | `PasteButton` | iOS 16+ |
 | `onChange(of:perform:)` | `onChange(of:) { }` or `onChange(of:) { old, new in }` | iOS 17+ |
 | `MagnificationGesture` | `MagnifyGesture` | iOS 17+ |
 | `RotationGesture` | `RotateGesture` | iOS 17+ |

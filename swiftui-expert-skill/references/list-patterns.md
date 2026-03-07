@@ -205,6 +205,168 @@ List(items) { item in
 
 Without `.scrollContentBackground(.hidden)`, a custom `.background()` has no visible effect on `List`.
 
+## Table
+
+> **Availability:** iOS 16.0+, iPadOS 16.0+, visionOS 1.0+
+
+A multi-column data container that presents rows of `Identifiable` data with sortable, selectable columns. On compact size classes (iPhone, iPad Slide Over), columns after the first are automatically hidden.
+
+### Basic Table
+
+```swift
+struct Person: Identifiable {
+    let givenName: String
+    let familyName: String
+    let emailAddress: String
+    let id = UUID()
+    var fullName: String { givenName + " " + familyName }
+}
+
+struct PeopleTable: View {
+    @State private var people: [Person] = [ /* ... */ ]
+
+    var body: some View {
+        Table(people) {
+            TableColumn("Given Name", value: \.givenName)
+            TableColumn("Family Name", value: \.familyName)
+            TableColumn("E-Mail Address", value: \.emailAddress)
+        }
+    }
+}
+```
+
+### Table with Selection
+
+Bind to a single `ID` for single-selection, or a `Set<ID>` for multi-selection:
+
+```swift
+struct SelectableTable: View {
+    @State private var people: [Person] = [ /* ... */ ]
+    @State private var selectedPeople = Set<Person.ID>()
+
+    var body: some View {
+        Table(people, selection: $selectedPeople) {
+            TableColumn("Given Name", value: \.givenName)
+            TableColumn("Family Name", value: \.familyName)
+            TableColumn("E-Mail Address", value: \.emailAddress)
+        }
+        Text("\(selectedPeople.count) people selected")
+    }
+}
+```
+
+### Sortable Table
+
+Provide a binding to `[KeyPathComparator]` and re-sort the data in `.onChange(of:)`:
+
+```swift
+struct SortableTable: View {
+    @State private var people: [Person] = [ /* ... */ ]
+    @State private var sortOrder = [KeyPathComparator(\Person.givenName)]
+
+    var body: some View {
+        Table(people, sortOrder: $sortOrder) {
+            TableColumn("Given Name", value: \.givenName)
+            TableColumn("Family Name", value: \.familyName)
+            TableColumn("E-Mail Address", value: \.emailAddress)
+        }
+        .onChange(of: sortOrder) { _, newOrder in
+            people.sort(using: newOrder)
+        }
+    }
+}
+```
+
+**Important:** The table does **not** sort data itself — you must re-sort the collection when `sortOrder` changes.
+
+### Adaptive Table for Compact Size Classes
+
+On iPhone or iPad in Slide Over, only the first column is shown. Customize it to display combined information:
+
+```swift
+struct AdaptiveTable: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    private var isCompact: Bool { horizontalSizeClass == .compact }
+
+    @State private var people: [Person] = [ /* ... */ ]
+    @State private var sortOrder = [KeyPathComparator(\Person.givenName)]
+
+    var body: some View {
+        Table(people, sortOrder: $sortOrder) {
+            TableColumn("Given Name", value: \.givenName) { person in
+                VStack(alignment: .leading) {
+                    Text(isCompact ? person.fullName : person.givenName)
+                    if isCompact {
+                        Text(person.emailAddress)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            TableColumn("Family Name", value: \.familyName)
+            TableColumn("E-Mail Address", value: \.emailAddress)
+        }
+        .onChange(of: sortOrder) { _, newOrder in
+            people.sort(using: newOrder)
+        }
+    }
+}
+```
+
+### Table with Static Rows
+
+Use `init(of:columns:rows:)` when rows are known at compile time:
+
+```swift
+struct Purchase: Identifiable {
+    let price: Decimal
+    let id = UUID()
+}
+
+struct TipTable: View {
+    let currencyStyle = Decimal.FormatStyle.Currency(code: "USD")
+
+    var body: some View {
+        Table(of: Purchase.self) {
+            TableColumn("Base price") { purchase in
+                Text(purchase.price, format: currencyStyle)
+            }
+            TableColumn("With 15% tip") { purchase in
+                Text(purchase.price * 1.15, format: currencyStyle)
+            }
+            TableColumn("With 20% tip") { purchase in
+                Text(purchase.price * 1.2, format: currencyStyle)
+            }
+        } rows: {
+            TableRow(Purchase(price: 20))
+            TableRow(Purchase(price: 50))
+            TableRow(Purchase(price: 75))
+        }
+    }
+}
+```
+
+### Table Styles
+
+```swift
+// Inset (no borders)
+Table(people) { /* columns */ }
+    .tableStyle(.inset)
+
+// Hide column headers
+Table(people) { /* columns */ }
+    .tableColumnHeaders(.hidden)
+```
+
+### Platform Behavior
+
+| Platform | Behavior |
+|----------|----------|
+| **iPadOS (regular)** | Full multi-column layout; headers and all columns visible |
+| **iPadOS (compact)** | Only the first column shown; headers hidden |
+| **iPhone (all sizes)** | Only the first column shown; headers hidden; list-like appearance |
+
+> **Best Practice:** Prefer handling the compact size class by showing combined info in the first column. This provides a seamless transition when the size class changes (e.g., entering/exiting Slide Over on iPad).
+
 ## Summary Checklist
 
 - [ ] ForEach uses stable identity (never `.indices` for dynamic content)
@@ -216,3 +378,6 @@ Without `.scrollContentBackground(.hidden)`, a custom `.background()` has no vis
 - [ ] Use `.refreshable` for pull-to-refresh
 - [ ] Use `ContentUnavailableView` for empty states (iOS 17+)
 - [ ] Use `.scrollContentBackground(.hidden)` for custom list backgrounds
+- [ ] `Table` adapts for compact size classes (first column shows combined info)
+- [ ] `Table` sorting re-sorts data in `.onChange(of: sortOrder)` (table doesn't sort itself)
+- [ ] `Table` data conforms to `Identifiable`

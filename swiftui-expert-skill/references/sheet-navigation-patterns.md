@@ -1,4 +1,4 @@
-# SwiftUI Sheet and Navigation Patterns Reference
+# SwiftUI Sheet, Navigation & Inspector Patterns Reference
 
 ## Sheet Patterns
 
@@ -239,6 +239,193 @@ struct ContentView: View {
 }
 ```
 
+## Multi-Column Navigation with NavigationSplitView
+
+### Two-Column Layout
+
+Use `NavigationSplitView` for sidebar-driven navigation. Available on iOS 16+, macOS 13+, tvOS 16+, watchOS 9+.
+
+```swift
+struct ContentView: View {
+    @State private var selectedItem: Item.ID?
+
+    var body: some View {
+        NavigationSplitView {
+            List(items, selection: $selectedItem) { item in
+                Text(item.name)
+            }
+            .navigationTitle("Items")
+        } detail: {
+            if let selectedItem, let item = items.first(where: { $0.id == selectedItem }) {
+                ItemDetailView(item: item)
+            } else {
+                ContentUnavailableView("Select an Item", systemImage: "doc")
+            }
+        }
+    }
+}
+```
+
+### Three-Column Layout
+
+```swift
+struct ContentView: View {
+    @State private var departmentId: Department.ID?
+    @State private var employeeIds = Set<Employee.ID>()
+
+    var body: some View {
+        NavigationSplitView {
+            List(model.departments, selection: $departmentId) { dept in
+                Text(dept.name)
+            }
+        } content: {
+            if let department = model.department(id: departmentId) {
+                List(department.employees, selection: $employeeIds) { emp in
+                    Text(emp.name)
+                }
+            } else {
+                Text("Select a department")
+            }
+        } detail: {
+            EmployeeDetails(for: employeeIds)
+        }
+    }
+}
+```
+
+### Column Visibility Control
+
+Programmatically show/hide columns:
+
+```swift
+struct ContentView: View {
+    @State private var columnVisibility = NavigationSplitViewVisibility.detailOnly
+
+    var body: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            SidebarView()
+        } detail: {
+            DetailView()
+        }
+    }
+}
+```
+
+### Column Width Customization
+
+```swift
+NavigationSplitView {
+    SidebarView()
+        .navigationSplitViewColumnWidth(min: 180, ideal: 220, max: 300)
+} detail: {
+    DetailView()
+        .navigationSplitViewColumnWidth(min: 400, ideal: 600)
+}
+```
+
+### Preferred Compact Column
+
+Control which column appears on top when the split view collapses on narrow devices (iPhone, Apple Watch):
+
+```swift
+struct ContentView: View {
+    @State private var preferredColumn = NavigationSplitViewColumn.detail
+
+    var body: some View {
+        NavigationSplitView(preferredCompactColumn: $preferredColumn) {
+            SidebarView()
+        } detail: {
+            DetailView()
+        }
+    }
+}
+```
+
+### Split View Style
+
+```swift
+NavigationSplitView {
+    SidebarView()
+} detail: {
+    DetailView()
+}
+.navigationSplitViewStyle(.balanced)       // Columns share space equally
+// .navigationSplitViewStyle(.prominentDetail) // Detail gets more space (default)
+```
+
+### Platform Behavior
+
+| Platform | Behavior |
+|----------|----------|
+| **macOS** | Columns always visible side-by-side; sidebar has translucent material; variable-width column resizing by dragging |
+| **iPadOS (regular)** | Sidebar can overlay or push detail; supports column visibility toggle via toolbar button |
+| **iOS / iPadOS (compact)** | Collapses into a single `NavigationStack`; sidebar items show disclosure chevrons; back button navigates between columns |
+| **iPhone (all sizes)** | Always collapsed into a stack; sidebar appears as the root list; selections push detail onto the stack |
+| **watchOS / tvOS** | Collapses into a single stack |
+
+## Inspector
+
+> **Availability:** iOS 17.0+, macOS 14.0+
+
+A trailing-edge panel for supplementary information.
+
+On wider size classes (macOS, iPad landscape), it appears as a **trailing column**. On compact size classes (iPhone), it **adapts to a sheet** automatically.
+
+### Basic Inspector
+
+```swift
+struct ShapeEditor: View {
+    @State private var showInspector = false
+
+    var body: some View {
+        MyEditorView()
+            .inspector(isPresented: $showInspector) {
+                InspectorContent()
+            }
+            .toolbar {
+                ToolbarItem {
+                    Button {
+                        showInspector.toggle()
+                    } label: {
+                        Label("Inspector", systemImage: "info.circle")
+                    }
+                }
+            }
+    }
+}
+```
+
+### Inspector with Column Width
+
+```swift
+MyEditorView()
+    .inspector(isPresented: $showInspector) {
+        InspectorContent()
+            .inspectorColumnWidth(min: 200, ideal: 250, max: 400)
+    }
+```
+
+### Inspector with Fixed Width
+
+```swift
+MyEditorView()
+    .inspector(isPresented: $showInspector) {
+        InspectorContent()
+            .inspectorColumnWidth(300)
+    }
+```
+
+### Platform Behavior
+
+| Platform | Behavior |
+|----------|----------|
+| **macOS** | Trailing-edge sidebar panel; resizable by dragging edge; integrates with window toolbar |
+| **iPadOS (regular)** | Trailing column alongside content; toggleable via toolbar button |
+| **iOS / iPadOS (compact)** | Adapts to a sheet presentation; swipe-to-dismiss supported |
+| **iPhone (all sizes)** | Always presented as a sheet (no trailing column); dismiss via swipe or button |
+
+> **Tip:** Use `InspectorCommands` in your app's `.commands` to include the default inspector toggle keyboard shortcut.
+
 ## Presentation Modifiers
 
 ### Full Screen Cover
@@ -323,6 +510,9 @@ struct ContentView: View {
 - [ ] Sheets own their actions and dismiss internally
 - [ ] Use `NavigationStack` with `navigationDestination(for:)` for type-safe navigation
 - [ ] Use `NavigationPath` for programmatic navigation
+- [ ] Use `NavigationSplitView` for sidebar-driven multi-column layouts
+- [ ] Use `Inspector` for trailing-edge supplementary panels
+- [ ] Set column widths with `navigationSplitViewColumnWidth(min:ideal:max:)` or `inspectorColumnWidth(min:ideal:max:)`
 - [ ] Use appropriate presentation modifiers (sheet, fullScreenCover, popover)
 - [ ] Alerts and confirmation dialogs use modern API with actions
 - [ ] Avoid passing dismiss/save callbacks to sheets

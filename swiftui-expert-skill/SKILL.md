@@ -1,6 +1,6 @@
 ---
 name: swiftui-expert-skill
-description: Write, review, or improve SwiftUI code following best practices for state management, view composition, performance, and iOS 26+ Liquid Glass adoption. Use when building new SwiftUI features, refactoring existing views, reviewing code quality, or adopting modern SwiftUI patterns.
+description: Write, review, or improve SwiftUI code following best practices for state management, view composition, performance, macOS-specific APIs, and iOS 26+ Liquid Glass adoption. Use when building new SwiftUI features, refactoring existing views, reviewing code quality, or adopting modern SwiftUI patterns.
 ---
 
 # SwiftUI Expert Skill
@@ -18,6 +18,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Verify list patterns use stable identity (see `references/list-patterns.md`)
 - Check animation patterns for correctness (see `references/animation-basics.md`, `references/animation-transitions.md`)
 - Review accessibility: proper grouping, traits, Dynamic Type support (see `references/accessibility-patterns.md`)
+- For macOS targets: verify correct use of macOS-specific APIs and patterns (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
 - Inspect Liquid Glass usage for correctness and consistency (see `references/liquid-glass.md`)
 - Validate iOS 26+ availability handling with sensible fallbacks
 
@@ -29,6 +30,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Ensure ForEach uses stable identity (see `references/list-patterns.md`)
 - Improve animation patterns (use value parameter, proper transitions, see `references/animation-basics.md`, `references/animation-transitions.md`)
 - Improve accessibility: use `Button` over tap gestures, add `@ScaledMetric` for Dynamic Type (see `references/accessibility-patterns.md`)
+- For macOS targets: adopt macOS-specific APIs (MenuBarExtra, Settings, Table, Commands, etc.) where appropriate (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
 - Suggest image downsampling when `UIImage(data:)` is used (as optional optimization, see `references/image-optimization.md`)
 - Adopt Liquid Glass only when explicitly requested by the user
 
@@ -39,6 +41,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Keep business logic in services and models for testability (see `references/layout-best-practices.md`)
 - Use correct animation patterns (implicit vs explicit, transitions, see `references/animation-basics.md`, `references/animation-transitions.md`, `references/animation-advanced.md`)
 - Use `Button` for tappable elements, add accessibility grouping and labels (see `references/accessibility-patterns.md`)
+- For macOS targets: use macOS-specific scenes (see `references/macos-scenes.md`), window styling (see `references/macos-window-styling.md`), and views like HSplitView, Table (see `references/macos-views.md`)
 - Apply glass effects after layout/appearance modifiers (see `references/liquid-glass.md`)
 - Gate iOS 26+ features with `#available` and provide fallbacks
 
@@ -217,6 +220,17 @@ Button("Confirm") { }
 - [ ] Related elements grouped with `accessibilityElement(children:)`
 - [ ] Custom controls use `accessibilityRepresentation` when appropriate
 
+### macOS APIs (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
+- [ ] Using `Settings` scene for preferences (not a custom window)
+- [ ] Using `MenuBarExtra` for menu bar items (not AppKit `NSStatusItem`)
+- [ ] Using `Commands` / `CommandGroup` / `CommandMenu` for menu bar menus
+- [ ] `Table` adapts for compact size classes on iOS (first column shows combined info)
+- [ ] Window sizing configured with `defaultSize`, `windowResizability`, and `frame(minWidth:minHeight:)`
+- [ ] macOS-only code wrapped in `#if os(macOS)` conditionals
+- [ ] Using `NSViewRepresentable` with proper `makeNSView`/`updateNSView` lifecycle
+- [ ] Using `NavigationSplitView` (not `HSplitView`) for sidebar-based navigation
+- [ ] `HSplitView`/`VSplitView` reserved for IDE-style equal peer panes
+
 ### Liquid Glass (iOS 26+)
 - [ ] `#available(iOS 26, *)` with fallback for Liquid Glass
 - [ ] Multiple glass views wrapped in `GlassEffectContainer`
@@ -229,16 +243,19 @@ Button("Confirm") { }
 - `references/state-management.md` - Property wrappers and data flow
 - `references/view-structure.md` - View composition, extraction, and container patterns
 - `references/performance-patterns.md` - Performance optimization techniques and anti-patterns
-- `references/list-patterns.md` - ForEach identity, stability, and list best practices
+- `references/list-patterns.md` - ForEach identity, stability, Table (iOS 16+), and list best practices
 - `references/layout-best-practices.md` - Layout patterns, context-agnostic views, and testability
 - `references/accessibility-patterns.md` - Accessibility traits, grouping, Dynamic Type, and VoiceOver
 - `references/animation-basics.md` - Core animation concepts, implicit/explicit animations, timing, performance
 - `references/animation-transitions.md` - Transitions, custom transitions, Animatable protocol
 - `references/animation-advanced.md` - Transactions, phase/keyframe animations (iOS 17+), completion handlers (iOS 17+), `@Animatable` macro (iOS 26+)
-- `references/sheet-navigation-patterns.md` - Sheet presentation and navigation patterns
+- `references/sheet-navigation-patterns.md` - Sheet presentation, NavigationSplitView, Inspector, and navigation patterns
 - `references/scroll-patterns.md` - ScrollView patterns and programmatic scrolling
 - `references/image-optimization.md` - AsyncImage, image downsampling, and optimization
 - `references/liquid-glass.md` - iOS 26+ Liquid Glass API
+- `references/macos-scenes.md` - macOS scene types: Settings, MenuBarExtra, WindowGroup, Window, UtilityWindow, DocumentGroup
+- `references/macos-window-styling.md` - macOS window configuration: toolbar styles, sizing, positioning, NavigationSplitView, Inspector, Commands
+- `references/macos-views.md` - macOS views and components: HSplitView, VSplitView, Table, PasteButton, file dialogs, drag & drop, AppKit interop
 
 ## Philosophy
 
