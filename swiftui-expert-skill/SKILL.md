@@ -18,6 +18,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Verify list patterns use stable identity (see `references/list-patterns.md`)
 - Check animation patterns for correctness (see `references/animation-basics.md`, `references/animation-transitions.md`)
 - Review accessibility: proper grouping, traits, Dynamic Type support (see `references/accessibility-patterns.md`)
+- Check chart patterns for correct mark usage, stable data identity, and availability gating (see `references/charts.md`; for accessibility and fallback strategies see `references/charts-accessibility.md`)
 - For macOS targets: verify correct use of macOS-specific APIs and patterns (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
 - Inspect Liquid Glass usage for correctness and consistency (see `references/liquid-glass.md`)
 - Validate iOS 26+ availability handling with sensible fallbacks
@@ -30,6 +31,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Ensure ForEach uses stable identity (see `references/list-patterns.md`)
 - Improve animation patterns (use value parameter, proper transitions, see `references/animation-basics.md`, `references/animation-transitions.md`)
 - Improve accessibility: use `Button` over tap gestures, add `@ScaledMetric` for Dynamic Type (see `references/accessibility-patterns.md`)
+- Review chart code for correct modifier scope, styling, and accessibility (see `references/charts.md`, `references/charts-accessibility.md`)
 - For macOS targets: adopt macOS-specific APIs (MenuBarExtra, Settings, Table, Commands, etc.) where appropriate (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
 - Suggest image downsampling when `UIImage(data:)` is used (as optional optimization, see `references/image-optimization.md`)
 - Adopt Liquid Glass only when explicitly requested by the user
@@ -41,6 +43,7 @@ Use this skill to build, review, or improve SwiftUI features with correct state 
 - Keep business logic in services and models for testability (see `references/layout-best-practices.md`)
 - Use correct animation patterns (implicit vs explicit, transitions, see `references/animation-basics.md`, `references/animation-transitions.md`, `references/animation-advanced.md`)
 - Use `Button` for tappable elements, add accessibility grouping and labels (see `references/accessibility-patterns.md`)
+- For charts: use correct mark types, stable data identity, and gate iOS 17+/18+/26+ APIs (see `references/charts.md`; for accessibility see `references/charts-accessibility.md`)
 - For macOS targets: use macOS-specific scenes (see `references/macos-scenes.md`), window styling (see `references/macos-window-styling.md`), and views like HSplitView, Table (see `references/macos-views.md`)
 - Apply glass effects after layout/appearance modifiers (see `references/liquid-glass.md`)
 - Gate iOS 26+ features with `#available` and provide fallbacks
@@ -220,6 +223,16 @@ Button("Confirm") { }
 - [ ] Related elements grouped with `accessibilityElement(children:)`
 - [ ] Custom controls use `accessibilityRepresentation` when appropriate
 
+### Charts (see `references/charts.md`, `references/charts-accessibility.md`)
+- [ ] `import Charts` is present in files using chart types
+- [ ] Chart data models use `Identifiable` (or explicit `id:` key path)
+- [ ] Chart-wide modifiers applied to `Chart`, not individual marks
+- [ ] iOS 17+ APIs (`SectorMark`, selection, scrollable axes) are availability-gated
+- [ ] iOS 18+ APIs (plot types like `LinePlot`, `AreaPlot`) are availability-gated
+- [ ] iOS 26+ APIs (`Chart3D`, `SurfacePlot`) are availability-gated
+- [ ] Meaningful `.value()` labels used for axes and accessibility
+- [ ] `foregroundStyle(by:)` used for categorical series (not manual per-mark colors)
+
 ### macOS APIs (see `references/macos-scenes.md`, `references/macos-window-styling.md`, `references/macos-views.md`)
 - [ ] Using `Settings` scene for preferences (not a custom window)
 - [ ] Using `MenuBarExtra` for menu bar items (not AppKit `NSStatusItem`)
@@ -249,6 +262,8 @@ Button("Confirm") { }
 - `references/animation-basics.md` - Core animation concepts, implicit/explicit animations, timing, performance
 - `references/animation-transitions.md` - Transitions, custom transitions, Animatable protocol
 - `references/animation-advanced.md` - Transactions, phase/keyframe animations (iOS 17+), completion handlers (iOS 17+), `@Animatable` macro (iOS 26+)
+- `references/charts.md` - Swift Charts marks, axes, selection, styling, composition, and Chart3D (iOS 26+)
+- `references/charts-accessibility.md` - Charts accessibility (VoiceOver, Audio Graph, AXChartDescriptorRepresentable), fallback strategies, and WWDC sessions
 - `references/sheet-navigation-patterns.md` - Sheet presentation, NavigationSplitView, Inspector, and navigation patterns
 - `references/scroll-patterns.md` - ScrollView patterns and programmatic scrolling
 - `references/image-optimization.md` - AsyncImage, image downsampling, and optimization

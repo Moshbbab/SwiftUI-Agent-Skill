@@ -120,6 +120,8 @@ swiftui-expert-skill/
     animation-advanced.md - Performance, interpolation, and complex animation chains
     animation-basics.md - Core animation concepts, implicit/explicit animations, timing
     animation-transitions.md - View transitions, matchedGeometryEffect, and state changes
+    charts-accessibility.md - Charts accessibility, fallback strategies, and WWDC sessions
+    charts.md - Swift Charts marks, axes, selection, styling, composition, and Chart3D
     image-optimization.md - AsyncImage usage, downsampling, caching
     latest-apis.md
     layout-best-practices.md - Layout patterns and GeometryReader alternatives
@@ -164,6 +166,7 @@ Several SwiftUI guidelines in this skill were inspired by or derived from the fo
 
 - [Skills](https://github.com/Dimillian/Skills) by [Thomas Ricouard](https://github.com/Dimillian) — a collection of SwiftUI-focused Codex skills covering UI patterns, performance auditing, and Liquid Glass.
 - [SwiftLee SwiftUI articles](https://www.avanderlee.com/category/swiftui/) and [Swift articles](https://www.avanderlee.com/category/swift/) by [Antoine van der Lee](https://www.avanderlee.com) — practical SwiftUI best practices covering state management, accessibility, view composition, performance debugging, image optimization, and more.
+- [Swift Charts Examples](https://github.com/jordibruin/Swift-Charts-Examples) by [Jordi Bruin](https://x.com/jordibruin) — a comprehensive collection of Swift Charts examples covering line, bar, area, range, heat map, and point charts with accessibility and customization patterns. Used with permission.
 
 ## About the authors
 

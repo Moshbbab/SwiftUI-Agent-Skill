@@ -142,7 +142,7 @@ struct ComplexSection: View {
 
 ## When @ViewBuilder Functions Are Acceptable
 
-Use for small, simple sections that don't affect performance:
+Use for small, simple sections (a few views, no expensive computation) that don't affect performance. `@ViewBuilder` functions work particularly well for static content that doesn't depend on any `@State` or `@Binding`, since SwiftUI won't need to diff them independently. Extract to a separate `struct` when the section is complex, depends on state, or needs to be skipped during re-evaluation.
 
 ```swift
 struct SimpleView: View {
