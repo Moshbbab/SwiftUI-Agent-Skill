@@ -5,6 +5,7 @@
 - [Core Principle](#core-principle)
 - [Dynamic Type with @ScaledMetric](#dynamic-type-with-scaledmetric)
 - [Accessibility Traits](#accessibility-traits)
+- [Decorative Images](#decorative-images)
 - [Element Grouping](#element-grouping)
 - [Custom Controls](#custom-controls)
 - [Summary Checklist](#summary-checklist)
@@ -49,6 +50,30 @@ Text(item.title)
 ```
 
 Use `.disabled(true)` to make VoiceOver announce "Dimmed" for non-interactive elements.
+
+## Decorative Images
+
+Use `Image(decorative:bundle:)` when an asset image is purely visual and should not appear in the accessibility tree.
+
+```swift
+Image(decorative: "confetti", bundle: nil)
+```
+
+This is appropriate for backgrounds, flourishes, and icons that do not add meaning beyond nearby text.
+
+If the image conveys information, keep it accessible and provide a clear label:
+
+```swift
+Image("receipt")
+    .accessibilityLabel("Receipt")
+```
+
+For non-asset images, such as SF Symbols, hide decorative content with `accessibilityHidden(true)` instead:
+
+```swift
+Image(systemName: "sparkles")
+    .accessibilityHidden(true)
+```
 
 ## Element Grouping
 
@@ -144,6 +169,7 @@ HStack {
 
 - [ ] Use `Button` instead of `onTapGesture` for tappable elements
 - [ ] Use `@ScaledMetric` for custom values that should scale with Dynamic Type
+- [ ] Mark purely decorative images as decorative or hidden from accessibility
 - [ ] Group related elements with `accessibilityElement(children:)`
 - [ ] Provide `accessibilityLabel` when default labels are unclear
 - [ ] Use `accessibilityRepresentation` for custom controls
