@@ -362,7 +362,7 @@ struct TipTable: View {
 
 If the number of columns is not known at runtime use `TableColumnForEach` to create columns based on a `RandomAccessCollection` of some data type. Either the collection’s elements must conform to `Identifiable` or you need to provide an id parameter to the `TableColumnForEach` initializer.
 
-This can be mixed with static compile time known `TableColumn` usages.
+This can be mixed with static compile time known `TableColumn` usage.
 
 ```swift
 struct AudioChannel: Identifiable {
