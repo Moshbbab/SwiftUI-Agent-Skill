@@ -86,7 +86,7 @@ See [Codex skills documentation](https://developers.openai.com/codex/skills/) fo
 
 ### Option E: Using pi package manager
 
-Install via [pi](https://github.com/mariozechner/pi-mono):
+Install via [pi](https://github.com/badlogic/pi-mono):
 ```bash
 pi install https://github.com/AvdLee/SwiftUI-Agent-Skill
 ```
